@@ -1,0 +1,419 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz - Smart Notes AI</title>
+
+<style>
+*{
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+margin:0;
+background:#f5f7fb;
+color:#1e293b;
+}
+
+.navbar{
+background:#172554;
+color:white;
+padding:18px 35px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo a{
+color:white;
+text-decoration:none;
+font-size:24px;
+font-weight:bold;
+}
+
+.nav a{
+color:white;
+text-decoration:none;
+margin-left:20px;
+}
+
+.container{
+max-width:950px;
+margin:35px auto;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+h1{
+color:#172554;
+margin-bottom:8px;
+}
+
+.subtitle{
+color:#64748b;
+margin-bottom:25px;
+}
+
+.error{
+background:#fee2e2;
+color:#991b1b;
+padding:15px;
+border-radius:10px;
+margin-bottom:20px;
+}
+
+.info{
+background:#eff6ff;
+padding:15px;
+border-radius:10px;
+margin-bottom:25px;
+color:#1e40af;
+}
+
+.question{
+background:#f8fafc;
+border:1px solid #e2e8f0;
+padding:25px;
+border-radius:15px;
+margin-bottom:25px;
+}
+
+.question-title{
+font-size:19px;
+font-weight:bold;
+color:#172554;
+margin-bottom:20px;
+}
+
+.option{
+display:flex;
+align-items:center;
+gap:12px;
+background:white;
+border:2px solid #e2e8f0;
+padding:15px;
+border-radius:10px;
+margin-bottom:12px;
+cursor:pointer;
+transition:.2s;
+}
+
+.option:hover{
+border-color:#60a5fa;
+background:#eff6ff;
+}
+
+.option input{
+width:18px;
+height:18px;
+cursor:pointer;
+accent-color:#2563eb;
+}
+
+.option-text{
+font-size:16px;
+line-height:1.4;
+}
+
+.option:has(input:checked){
+border-color:#2563eb;
+background:#eff6ff;
+}
+
+.submit{
+width:100%;
+padding:16px;
+border:0;
+border-radius:10px;
+background:#2563eb;
+color:white;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+margin-top:10px;
+}
+
+.submit:hover{
+background:#1d4ed8;
+}
+
+.empty{
+text-align:center;
+padding:40px;
+color:#64748b;
+}
+
+.back{
+display:inline-block;
+margin-top:15px;
+color:#2563eb;
+text-decoration:none;
+font-weight:bold;
+}
+
+@media(max-width:700px){
+
+.navbar{
+padding:15px;
+flex-direction:column;
+gap:12px;
+}
+
+.nav a{
+margin:0 7px;
+font-size:14px;
+}
+
+.container{
+margin:15px auto;
+padding:10px;
+}
+
+.card{
+padding:20px;
+}
+
+.question{
+padding:18px;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+
+<div class="logo">
+<a href="{{ url_for('dashboard') }}">
+Smart Notes AI
+</a>
+</div>
+
+<div class="nav">
+
+<a href="{{ url_for('dashboard') }}">
+Dashboard
+</a>
+
+<a href="{{ url_for('summarizer') }}">
+Summary
+</a>
+
+<a href="{{ url_for('history') }}">
+History
+</a>
+
+<a href="{{ url_for('logout') }}">
+Logout
+</a>
+
+</div>
+
+</div>
+
+
+<div class="container">
+
+{% if error %}
+
+<div class="error">
+{{ error }}
+</div>
+
+{% endif %}
+
+
+{% if questions %}
+
+<div class="card">
+
+<h1>📝 AI Generated Quiz</h1>
+
+<p class="subtitle">
+Select one answer for every question.
+</p>
+
+
+<div class="info">
+
+<strong>{{ question_count }}</strong>
+questions
+
+&nbsp; | &nbsp;
+
+<strong>{{ option_count }}</strong>
+options per question
+
+</div>
+
+
+<form
+action="{{ url_for('submit_quiz') }}"
+method="POST"
+id="quizForm"
+>
+
+
+<input
+type="hidden"
+name="questions"
+value="{{ questions|tojson|forceescape }}"
+>
+
+
+{% for q in questions %}
+
+{% set question_index = loop.index0 %}
+
+<div class="question">
+
+<div class="question-title">
+
+{{ question_index + 1 }}.
+{{ q.question }}
+
+</div>
+
+
+{% if q.options %}
+
+{% for option in q.options %}
+
+<label class="option">
+
+<input
+type="radio"
+name="question_{{ question_index }}"
+value="{{ loop.index0 }}"
+required
+>
+
+<span class="option-text">
+{{ option }}
+</span>
+
+</label>
+
+{% endfor %}
+
+{% else %}
+
+<div class="error">
+No options available for this question.
+</div>
+
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+
+<button
+type="submit"
+class="submit"
+id="submitButton"
+>
+Submit Quiz
+</button>
+
+</form>
+
+</div>
+
+{% else %}
+
+<div class="card">
+
+<div class="empty">
+
+<h2>No Quiz Available</h2>
+
+<p>
+Please generate a quiz from the summary page.
+</p>
+
+<a
+href="{{ url_for('summarizer') }}"
+class="back"
+>
+← Back to Summary
+</a>
+
+</div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+
+<script>
+
+const form=document.getElementById("quizForm");
+
+if(form){
+
+form.addEventListener("submit",function(event){
+
+const questions=document.querySelectorAll(".question");
+
+let answered=0;
+
+questions.forEach(function(question){
+
+const selected=question.querySelector(
+'input[type="radio"]:checked'
+);
+
+if(selected){
+answered++;
+}
+
+});
+
+if(answered<questions.length){
+
+event.preventDefault();
+
+alert(
+"Please answer all questions before submitting."
+);
+
+return false;
+
+}
+
+const button=document.getElementById(
+"submitButton"
+);
+
+if(button){
+
+button.disabled=true;
+
+button.innerText="Checking Answers...";
+
+}
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
+```

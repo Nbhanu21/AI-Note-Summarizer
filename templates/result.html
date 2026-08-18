@@ -1,0 +1,646 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{{ title }} - Smart Notes AI</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,Helvetica,sans-serif;
+background:
+radial-gradient(circle at top right,rgba(99,102,241,.10),transparent 32%),
+#f6f7ff;
+color:#1f2937;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:250px;
+height:100vh;
+background:linear-gradient(180deg,#4f46e5,#312e81);
+padding:25px 18px;
+color:white;
+box-shadow:8px 0 30px rgba(49,46,129,.16);
+z-index:10;
+}
+
+.logo{
+font-size:23px;
+font-weight:700;
+margin-bottom:45px;
+}
+
+.logo a{
+color:white;
+text-decoration:none;
+}
+
+.logo span{
+color:#c4b5fd;
+}
+
+.nav a{
+display:flex;
+align-items:center;
+gap:12px;
+padding:14px 16px;
+margin-bottom:8px;
+color:#ddd6fe;
+text-decoration:none;
+border-radius:12px;
+transition:.25s;
+}
+
+.nav a:hover{
+background:rgba(255,255,255,.16);
+color:white;
+transform:translateX(5px);
+}
+
+.nav a.active{
+background:rgba(255,255,255,.18);
+color:white;
+}
+
+.logout{
+position:absolute;
+bottom:25px;
+left:18px;
+right:18px;
+}
+
+.logout a{
+display:block;
+text-align:center;
+padding:12px;
+background:rgba(255,255,255,.12);
+color:white;
+text-decoration:none;
+border-radius:10px;
+transition:.25s;
+}
+
+.logout a:hover{
+background:rgba(255,255,255,.22);
+}
+
+/* MAIN */
+
+.main{
+margin-left:250px;
+padding:35px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:28px;
+}
+
+.header h1{
+font-size:31px;
+color:#312e81;
+}
+
+.header p{
+margin-top:7px;
+color:#6b7280;
+}
+
+.user{
+background:white;
+padding:11px 18px;
+border-radius:12px;
+box-shadow:0 5px 20px rgba(79,70,229,.08);
+font-weight:600;
+}
+
+/* SUMMARY */
+
+.summary-card{
+max-width:1000px;
+margin:auto;
+background:white;
+border-radius:22px;
+padding:35px;
+box-shadow:0 10px 35px rgba(79,70,229,.10);
+border:1px solid #e5e7eb;
+}
+
+.summary-header{
+display:flex;
+align-items:center;
+gap:16px;
+margin-bottom:25px;
+}
+
+.summary-icon{
+width:60px;
+height:60px;
+border-radius:16px;
+background:linear-gradient(135deg,#dbeafe,#bfdbfe);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+}
+
+.summary-header h2{
+font-size:27px;
+color:#312e81;
+}
+
+.summary-header p{
+margin-top:6px;
+color:#6b7280;
+}
+
+.summary-meta{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:25px;
+}
+
+.meta{
+padding:8px 13px;
+border-radius:20px;
+font-size:12px;
+font-weight:bold;
+}
+
+.meta-summary{
+background:#dbeafe;
+color:#2563eb;
+}
+
+.meta-ai{
+background:#ede9fe;
+color:#7c3aed;
+}
+
+/* SUMMARY CONTENT */
+
+.summary-container{
+background:#f8fafc;
+border:1px solid #e2e8f0;
+border-radius:17px;
+padding:28px;
+margin-bottom:30px;
+}
+
+.summary-label{
+font-size:14px;
+font-weight:bold;
+color:#312e81;
+margin-bottom:15px;
+}
+
+.summary{
+white-space:pre-wrap;
+line-height:1.8;
+font-size:16px;
+color:#334155;
+}
+
+/* QUIZ */
+
+.quiz-box{
+margin-top:10px;
+background:linear-gradient(135deg,#faf5ff,#f5f3ff);
+border:2px solid #ddd6fe;
+padding:28px;
+border-radius:18px;
+}
+
+.quiz-header{
+display:flex;
+align-items:center;
+gap:14px;
+margin-bottom:12px;
+}
+
+.quiz-icon{
+width:50px;
+height:50px;
+border-radius:13px;
+background:#ede9fe;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:25px;
+}
+
+.quiz-box h2{
+color:#6b21a8;
+font-size:22px;
+}
+
+.quiz-box p{
+color:#6b7280;
+margin-bottom:20px;
+line-height:1.5;
+}
+
+.quiz-settings{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:18px;
+margin-bottom:20px;
+}
+
+.setting label{
+display:block;
+font-size:13px;
+font-weight:bold;
+color:#4c1d95;
+margin-bottom:8px;
+}
+
+select{
+width:100%;
+padding:13px;
+border:1px solid #c4b5fd;
+border-radius:10px;
+font-size:15px;
+background:white;
+color:#1f2937;
+outline:none;
+cursor:pointer;
+}
+
+select:focus{
+border-color:#7c3aed;
+box-shadow:0 0 0 4px rgba(124,58,237,.10);
+}
+
+.generate{
+width:100%;
+padding:15px;
+background:linear-gradient(135deg,#7c3aed,#6d28d9);
+color:white;
+border:0;
+border-radius:11px;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+transition:.25s;
+}
+
+.generate:hover{
+transform:translateY(-2px);
+box-shadow:0 9px 20px rgba(124,58,237,.22);
+}
+
+/* LINKS */
+
+.links{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:25px;
+}
+
+.links a{
+text-align:center;
+padding:14px;
+border-radius:10px;
+text-decoration:none;
+font-weight:bold;
+transition:.25s;
+}
+
+.dashboard{
+background:#e0e7ff;
+color:#3730a3;
+}
+
+.history{
+background:#dcfce7;
+color:#15803d;
+}
+
+.links a:hover{
+transform:translateY(-2px);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:800px){
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+}
+
+.logout{
+position:static;
+margin-top:20px;
+}
+
+.main{
+margin-left:0;
+padding:20px;
+}
+
+.header{
+flex-direction:column;
+align-items:flex-start;
+gap:15px;
+}
+
+.summary-card{
+padding:22px;
+}
+
+}
+
+@media(max-width:600px){
+
+.quiz-settings{
+grid-template-columns:1fr;
+}
+
+.links{
+grid-template-columns:1fr;
+}
+
+.summary-header{
+align-items:flex-start;
+}
+
+.summary-header h2{
+font-size:22px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+
+<a href="{{ url_for('dashboard') }}">
+Smart <span>Notes AI</span>
+</a>
+
+</div>
+
+<div class="nav">
+
+<a href="{{ url_for('dashboard') }}">
+🏠 Dashboard
+</a>
+
+<a href="{{ url_for('summarizer') }}">
+📝 Summary
+</a>
+
+<a href="{{ url_for('quiz') }}">
+🎯 Quiz
+</a>
+
+<a href="{{ url_for('history') }}">
+🕘 History
+</a>
+
+</div>
+
+<div class="logout">
+
+<a href="{{ url_for('logout') }}">
+Logout
+</a>
+
+</div>
+
+</div>
+
+
+<div class="main">
+
+<div class="header">
+
+<div>
+
+<h1>Summary Result</h1>
+
+<p>
+Your AI-generated study summary is ready.
+</p>
+
+</div>
+
+<div class="user">
+👤 {{ session.get('username','User') }}
+</div>
+
+</div>
+
+
+<div class="summary-card">
+
+
+<div class="summary-header">
+
+<div class="summary-icon">
+📚
+</div>
+
+<div>
+
+<h2>
+{{ title }}
+</h2>
+
+<p>
+AI Generated Summary
+</p>
+
+</div>
+
+</div>
+
+
+<div class="summary-meta">
+
+<span class="meta meta-summary">
+SUMMARY
+</span>
+
+<span class="meta meta-ai">
+AI GENERATED
+</span>
+
+</div>
+
+
+<div class="summary-container">
+
+<div class="summary-label">
+SUMMARY CONTENT
+</div>
+
+<div class="summary">
+{{ summary }}
+</div>
+
+</div>
+
+
+<div class="quiz-box">
+
+<div class="quiz-header">
+
+<div class="quiz-icon">
+🎯
+</div>
+
+<h2>
+Generate Quiz
+</h2>
+
+</div>
+
+<p>
+Create a quiz from the <strong>same study material</strong>.
+Choose how many questions and options you want.
+</p>
+
+
+<form action="/quiz" method="POST">
+
+<input
+type="hidden"
+name="text"
+value="{{ study_text }}"
+>
+
+<input
+type="hidden"
+name="title"
+value="{{ title }}"
+>
+
+
+<div class="quiz-settings">
+
+<div class="setting">
+
+<label for="question_count">
+Number of Questions
+</label>
+
+<select
+name="question_count"
+id="question_count"
+>
+
+<option value="5">
+5 Questions
+</option>
+
+<option value="10">
+10 Questions
+</option>
+
+<option value="15">
+15 Questions
+</option>
+
+<option value="20">
+20 Questions
+</option>
+
+</select>
+
+</div>
+
+
+<div class="setting">
+
+<label for="option_count">
+Options Per Question
+</label>
+
+<select
+name="option_count"
+id="option_count"
+>
+
+<option value="2">
+2 Options
+</option>
+
+<option value="3">
+3 Options
+</option>
+
+<option value="4" selected>
+4 Options
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<button
+type="submit"
+class="generate"
+>
+🎯 Generate Quiz
+</button>
+
+</form>
+
+</div>
+
+
+<div class="links">
+
+<a
+href="{{ url_for('dashboard') }}"
+class="dashboard"
+>
+🏠 Dashboard
+</a>
+
+<a
+href="{{ url_for('history') }}"
+class="history"
+>
+🕘 View History
+</a>
+
+</div>
+
+
+</div>
+
+</div>
+
+</body>
+</html>
+```

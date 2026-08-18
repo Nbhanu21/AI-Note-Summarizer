@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>History - Smart Notes AI</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+margin:0;
+background:#f5f7fb;
+color:#1e293b;
+}
+
+.navbar{
+background:#172554;
+color:white;
+padding:18px 35px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo a{
+color:white;
+text-decoration:none;
+font-size:24px;
+font-weight:bold;
+}
+
+.nav a{
+color:white;
+text-decoration:none;
+margin-left:20px;
+}
+
+.container{
+max-width:1050px;
+margin:35px auto;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.header h1{
+color:#172554;
+}
+
+.clear{
+background:#dc2626;
+color:white;
+border:0;
+padding:12px 18px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.activity{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:22px;
+border-radius:14px;
+margin-bottom:15px;
+border:2px solid;
+}
+
+.summary-activity{
+background:#eff6ff;
+border-color:#60a5fa;
+}
+
+.quiz-activity{
+background:#faf5ff;
+border-color:#c084fc;
+}
+
+.activity-left{
+display:flex;
+align-items:center;
+gap:18px;
+}
+
+.icon{
+width:55px;
+height:55px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:25px;
+}
+
+.summary-icon{
+background:#bfdbfe;
+}
+
+.quiz-icon{
+background:#e9d5ff;
+}
+
+.info h3{
+margin:0 0 8px;
+}
+
+.summary-title{
+color:#1d4ed8;
+}
+
+.quiz-title{
+color:#7e22ce;
+}
+
+.info p{
+margin:5px 0;
+color:#64748b;
+}
+
+.badge{
+display:inline-block;
+padding:6px 12px;
+border-radius:20px;
+font-size:13px;
+font-weight:bold;
+margin-top:5px;
+}
+
+.summary-badge{
+background:#dbeafe;
+color:#1d4ed8;
+}
+
+.quiz-badge{
+background:#f3e8ff;
+color:#7e22ce;
+}
+
+.score{
+font-size:18px;
+font-weight:bold;
+color:#7e22ce;
+}
+
+.actions{
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+.view{
+padding:10px 16px;
+border-radius:8px;
+text-decoration:none;
+color:white;
+}
+
+.summary-view{
+background:#2563eb;
+}
+
+.quiz-view{
+background:#9333ea;
+}
+
+.delete{
+background:#dc2626;
+color:white;
+padding:10px 16px;
+border:0;
+border-radius:8px;
+cursor:pointer;
+}
+
+.empty{
+text-align:center;
+padding:50px;
+color:#64748b;
+}
+
+.legend{
+display:flex;
+gap:20px;
+margin-bottom:25px;
+}
+
+.legend-item{
+display:flex;
+align-items:center;
+gap:8px;
+font-weight:bold;
+}
+
+.legend-box{
+width:18px;
+height:18px;
+border-radius:5px;
+}
+
+.blue{
+background:#60a5fa;
+}
+
+.purple{
+background:#c084fc;
+}
+
+@media(max-width:750px){
+
+.header{
+flex-direction:column;
+align-items:flex-start;
+gap:15px;
+}
+
+.activity{
+flex-direction:column;
+align-items:flex-start;
+gap:20px;
+}
+
+.actions{
+width:100%;
+}
+
+.view{
+flex:1;
+text-align:center;
+}
+
+.legend{
+flex-direction:column;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<div class="logo">
+
+<a href="/dashboard">
+Smart Notes AI
+</a>
+
+</div>
+
+<div class="nav">
+
+<a href="/dashboard">
+Dashboard
+</a>
+
+<a href="/summarizer">
+Summary
+</a>
+
+<a href="/history">
+History
+</a>
+
+<a href="/logout">
+Logout
+</a>
+
+</div>
+
+</div>
+
+
+<div class="container">
+
+<div class="card">
+
+<div class="header">
+
+<h1>
+📚 Activity History
+</h1>
+
+<form
+action="/clear_history"
+method="POST"
+onsubmit="return confirm('Are you sure you want to clear all history?')"
+>
+
+<button class="clear">
+Clear History
+</button>
+
+</form>
+
+</div>
+
+
+<div class="legend">
+
+<div class="legend-item">
+
+<span class="legend-box blue"></span>
+
+Summary
+
+</div>
+
+<div class="legend-item">
+
+<span class="legend-box purple"></span>
+
+Quiz
+
+</div>
+
+</div>
+
+
+{% if activities %}
+
+{% for activity in activities %}
+
+{% if activity.type|lower == "quiz" %}
+
+<div class="activity quiz-activity">
+
+<div class="activity-left">
+
+<div class="icon quiz-icon">
+📝
+</div>
+
+<div class="info">
+
+<h3 class="quiz-title">
+{{ activity.title }}
+</h3>
+
+<span class="badge quiz-badge">
+QUIZ
+</span>
+
+<p>
+📅 {{ activity.date }}
+</p>
+
+<p class="score">
+Score:
+{{ activity.score }}
+/
+{{ activity.total }}
+
+({{ activity.percentage }}%)
+</p>
+
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<a
+href="/history/{{ activity.id }}"
+class="view quiz-view"
+>
+View Details
+</a>
+
+<form
+action="/delete_history/{{ activity.id }}"
+method="POST"
+onsubmit="return confirm('Delete this quiz?')"
+>
+
+<button class="delete">
+Delete
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+
+{% else %}
+
+<div class="activity summary-activity">
+
+<div class="activity-left">
+
+<div class="icon summary-icon">
+📚
+</div>
+
+<div class="info">
+
+<h3 class="summary-title">
+{{ activity.title }}
+</h3>
+
+<span class="badge summary-badge">
+SUMMARY
+</span>
+
+<p>
+📅 {{ activity.date }}
+</p>
+
+<p>
+AI Generated Study Summary
+</p>
+
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<a
+href="/history/{{ activity.id }}"
+class="view summary-view"
+>
+View Details
+</a>
+
+<form
+action="/delete_history/{{ activity.id }}"
+method="POST"
+onsubmit="return confirm('Delete this summary?')"
+>
+
+<button class="delete">
+Delete
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+{% endif %}
+
+{% endfor %}
+
+{% else %}
+
+<div class="empty">
+
+<h2>
+No Activity Yet
+</h2>
+
+<p>
+Generate a summary or quiz and it will appear here.
+</p>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</body>
+
+</html>

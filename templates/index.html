@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Smart Notes AI</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f5f7fb;color:#1e293b}
+.navbar{background:#172554;color:white;padding:18px 35px;display:flex;justify-content:space-between;align-items:center}
+.logo a{color:white;text-decoration:none;font-size:24px;font-weight:bold}
+.nav a{color:white;text-decoration:none;margin-left:20px}
+.container{max-width:950px;margin:35px auto;padding:20px}
+.card{background:white;padding:35px;border-radius:18px;box-shadow:0 5px 20px rgba(0,0,0,.08)}
+h1{color:#172554}
+.subtitle{color:#64748b;margin-bottom:25px}
+.error{background:#fee2e2;color:#991b1b;padding:15px;border-radius:10px;margin-bottom:20px}
+.field{margin-bottom:22px}
+label{display:block;font-weight:bold;margin-bottom:8px;color:#172554}
+input[type=text],input[type=file],textarea,select{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:9px;font-size:16px;background:white}
+textarea{height:220px;resize:vertical}
+.upload{border:2px dashed #60a5fa;background:#eff6ff;padding:25px;border-radius:14px;text-align:center;margin-bottom:25px}
+.divider{text-align:center;color:#64748b;font-weight:bold;margin:20px}
+.settings{background:#f8fafc;padding:20px;border-radius:12px;margin-top:20px}
+.row{display:flex;gap:20px}
+.row .field{flex:1}
+button{width:100%;padding:15px;background:#2563eb;color:white;border:0;border-radius:9px;font-size:17px;cursor:pointer}
+button:hover{background:#1d4ed8}
+@media(max-width:700px){.row{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+<div class="logo"><a href="/dashboard">Smart Notes AI</a></div>
+<div class="nav">
+<a href="/dashboard">Dashboard</a>
+<a href="/summarizer">Summary</a>
+<a href="/history">History</a>
+<a href="/logout">Logout</a>
+</div>
+</div>
+
+<div class="container">
+
+{% if error %}
+<div class="error">{{ error }}</div>
+{% endif %}
+
+<div class="card">
+
+<h1>📚 AI Note Summarizer & Quiz Generator</h1>
+
+<p class="subtitle">
+Create a summary and quiz from your study material.
+</p>
+
+<form action="/summarizer" method="POST" enctype="multipart/form-data">
+
+<div class="field">
+
+<label>Summary Title</label>
+
+<input
+type="text"
+name="title"
+placeholder="Example: Python Unit 1"
+required
+>
+
+</div>
+
+<div class="upload">
+
+<h3>📄 Upload PDF</h3>
+
+<p>Select your study material PDF.</p>
+
+<input
+type="file"
+name="pdf"
+accept=".pdf,application/pdf"
+>
+
+</div>
+
+<div class="divider">
+OR
+</div>
+
+<div class="field">
+
+<label>Study Notes</label>
+
+<textarea
+name="text"
+placeholder="Paste your study notes here..."
+></textarea>
+
+</div>
+
+<div class="settings">
+
+<h3>Quiz Settings</h3>
+
+<div class="row">
+
+<div class="field">
+
+<label>Number of Questions</label>
+
+<select name="question_count">
+
+<option value="5">5 Questions</option>
+<option value="10">10 Questions</option>
+<option value="15">15 Questions</option>
+<option value="20">20 Questions</option>
+
+</select>
+
+</div>
+
+<div class="field">
+
+<label>Options Per Question</label>
+
+<select name="option_count">
+
+<option value="2">2 Options</option>
+<option value="3">3 Options</option>
+<option value="4" selected>4 Options</option>
+
+</select>
+
+</div>
+
+</div>
+
+</div>
+
+<button type="submit">
+✨ Generate Summary & Quiz
+</button>
+
+</form>
+
+</div>
+</div>
+
+</body>
+</html>

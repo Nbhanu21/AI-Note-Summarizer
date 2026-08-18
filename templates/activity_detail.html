@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Activity Details - Smart Notes AI</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+margin:0;
+background:#f5f7fb;
+color:#1e293b;
+}
+
+.navbar{
+background:#172554;
+color:white;
+padding:18px 35px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo a{
+color:white;
+text-decoration:none;
+font-size:24px;
+font-weight:bold;
+}
+
+.nav a{
+color:white;
+text-decoration:none;
+margin-left:20px;
+}
+
+.container{
+max-width:950px;
+margin:35px auto;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+h1{
+color:#172554;
+}
+
+.meta{
+background:#f8fafc;
+padding:18px;
+border-radius:10px;
+margin:20px 0;
+}
+
+.summary{
+white-space:pre-wrap;
+line-height:1.7;
+background:#f8fafc;
+padding:25px;
+border-radius:12px;
+}
+
+.score{
+background:#eff6ff;
+padding:25px;
+border-radius:14px;
+text-align:center;
+margin:20px 0;
+}
+
+.score h2{
+font-size:36px;
+color:#172554;
+margin:10px;
+}
+
+.question{
+padding:22px;
+border-radius:12px;
+margin-bottom:18px;
+border:2px solid #e2e8f0;
+}
+
+.question.correct{
+background:#f0fdf4;
+border-color:#86efac;
+}
+
+.question.wrong{
+background:#fef2f2;
+border-color:#fca5a5;
+}
+
+.question h3{
+color:#172554;
+}
+
+.answer{
+background:white;
+padding:12px;
+border-radius:8px;
+margin-top:10px;
+}
+
+.label{
+font-weight:bold;
+}
+
+.correct{
+color:#15803d;
+font-weight:bold;
+}
+
+.wrong{
+color:#b91c1c;
+font-weight:bold;
+}
+
+.back{
+display:inline-block;
+background:#2563eb;
+color:white;
+padding:13px 20px;
+border-radius:8px;
+text-decoration:none;
+margin-top:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<div class="logo">
+
+<a href="/dashboard">
+Smart Notes AI
+</a>
+
+</div>
+
+<div class="nav">
+
+<a href="/dashboard">
+Dashboard
+</a>
+
+<a href="/summarizer">
+Summary
+</a>
+
+<a href="/history">
+History
+</a>
+
+<a href="/logout">
+Logout
+</a>
+
+</div>
+
+</div>
+
+
+<div class="container">
+
+<div class="card">
+
+<h1>
+Activity Details
+</h1>
+
+
+<div class="meta">
+
+<strong>
+{{ activity.title }}
+</strong>
+
+<br><br>
+
+Type:
+{{ activity.type }}
+
+<br>
+
+Date:
+{{ activity.date }}
+
+</div>
+
+
+{% if activity.type|lower == "summary" %}
+
+<h2>
+📚 Summary
+</h2>
+
+<div class="summary">
+
+{{ activity.content }}
+
+</div>
+
+
+{% elif activity.type|lower == "quiz" %}
+
+<div class="score">
+
+<p>
+Quiz Score
+</p>
+
+<h2>
+{{ activity.score }} / {{ activity.total }}
+</h2>
+
+<p>
+{{ activity.percentage }}%
+</p>
+
+</div>
+
+
+<h2>
+📝 Answer Review
+</h2>
+
+
+{% if activity.quiz_data %}
+
+{% for q in activity.quiz_data %}
+
+<div class="question {% if q.is_correct %}correct{% else %}wrong{% endif %}">
+
+<h3>
+{{ loop.index }}. {{ q.question }}
+</h3>
+
+
+<div class="answer">
+
+<span class="label">
+Your Answer:
+</span>
+
+<br>
+
+{% if q.selected_answer %}
+{{ q.selected_answer }}
+{% else %}
+Not answered
+{% endif %}
+
+</div>
+
+
+<div class="answer">
+
+<span class="label">
+Correct Answer:
+</span>
+
+<br>
+
+<strong class="correct">
+{{ q.correct_answer }}
+</strong>
+
+</div>
+
+
+{% if q.is_correct %}
+
+<div class="answer correct">
+✓ Correct
+</div>
+
+{% else %}
+
+<div class="answer wrong">
+✗ Wrong
+</div>
+
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<p>
+This quiz was generated, but no answer data was saved for this activity.
+</p>
+
+{% endif %}
+
+{% endif %}
+
+
+<a
+href="/history"
+class="back"
+>
+← Back to History
+</a>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

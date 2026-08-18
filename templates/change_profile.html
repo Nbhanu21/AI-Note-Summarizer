@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Change Profile - Smart Notes AI</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f6f7ff;
+color:#1f2937;
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:250px;
+height:100vh;
+background:linear-gradient(180deg,#4f46e5,#312e81);
+padding:25px 18px;
+color:white;
+}
+
+.logo{
+font-size:23px;
+font-weight:bold;
+margin-bottom:45px;
+}
+
+.logo a{
+color:white;
+text-decoration:none;
+}
+
+.logo span{
+color:#c4b5fd;
+}
+
+.nav a{
+display:block;
+padding:14px 16px;
+margin-bottom:8px;
+border-radius:12px;
+color:#ddd6fe;
+text-decoration:none;
+}
+
+.nav a:hover,
+.nav a.active{
+background:rgba(255,255,255,.16);
+color:white;
+}
+
+.logout{
+position:absolute;
+bottom:25px;
+left:18px;
+right:18px;
+}
+
+.logout a{
+display:block;
+text-align:center;
+padding:12px;
+background:rgba(255,255,255,.12);
+color:white;
+text-decoration:none;
+border-radius:10px;
+}
+
+.main{
+margin-left:250px;
+padding:40px;
+max-width:1000px;
+}
+
+.card{
+background:white;
+padding:35px;
+border-radius:20px;
+box-shadow:0 8px 25px rgba(79,70,229,.08);
+}
+
+h1{
+color:#312e81;
+margin-bottom:8px;
+}
+
+.subtitle{
+color:#6b7280;
+margin-bottom:30px;
+}
+
+.form-group{
+margin-bottom:20px;
+}
+
+label{
+display:block;
+font-weight:bold;
+margin-bottom:8px;
+color:#374151;
+}
+
+input{
+width:100%;
+padding:14px;
+border:1px solid #d1d5db;
+border-radius:10px;
+font-size:16px;
+outline:none;
+}
+
+input:focus{
+border-color:#6366f1;
+box-shadow:0 0 0 3px rgba(99,102,241,.1);
+}
+
+button{
+width:100%;
+padding:15px;
+border:0;
+border-radius:10px;
+background:linear-gradient(135deg,#4f46e5,#7c3aed);
+color:white;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.92;
+}
+
+.error{
+background:#fee2e2;
+color:#991b1b;
+padding:14px;
+border-radius:10px;
+margin-bottom:20px;
+}
+
+.info{
+background:#eef2ff;
+color:#3730a3;
+padding:15px;
+border-radius:10px;
+margin-bottom:25px;
+}
+
+.back{
+display:inline-block;
+margin-top:18px;
+color:#4f46e5;
+text-decoration:none;
+}
+
+@media(max-width:700px){
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+}
+
+.logout{
+position:static;
+margin-top:20px;
+}
+
+.main{
+margin-left:0;
+padding:20px;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+<a href="{{ url_for('dashboard') }}">
+Smart <span>Notes AI</span>
+</a>
+</div>
+
+<div class="nav">
+
+<a href="{{ url_for('dashboard') }}">
+🏠 Dashboard
+</a>
+
+<a href="{{ url_for('summarizer') }}">
+📝 Summary
+</a>
+
+<a href="{{ url_for('quiz') }}">
+🎯 Quiz
+</a>
+
+<a href="{{ url_for('history') }}">
+🕘 History
+</a>
+
+<a href="{{ url_for('settings') }}" class="active">
+⚙️ Settings
+</a>
+
+</div>
+
+<div class="logout">
+<a href="{{ url_for('logout') }}">
+Logout
+</a>
+</div>
+
+</div>
+
+<div class="main">
+
+<div class="card">
+
+<h1>👤 Change Profile</h1>
+
+<p class="subtitle">
+Change your Smart Notes AI username.
+</p>
+
+{% if error %}
+
+<div class="error">
+{{ error }}
+</div>
+
+{% endif %}
+
+<div class="info">
+Your existing summaries and quiz history will remain connected to your new username.
+</div>
+
+<form method="POST"
+action="{{ url_for('change_profile') }}">
+
+<div class="form-group">
+
+<label>
+Username
+</label>
+
+<input
+type="text"
+name="username"
+value="{{ username }}"
+required
+autocomplete="username"
+>
+
+</div>
+
+<div class="form-group">
+
+<label>
+Current Password
+</label>
+
+<input
+type="password"
+name="password"
+placeholder="Enter your current password"
+required
+autocomplete="current-password"
+>
+
+</div>
+
+<button type="submit">
+Save Profile
+</button>
+
+</form>
+
+<a
+href="{{ url_for('settings') }}"
+class="back">
+
+← Back to Settings
+
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account - Smart Notes AI</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    background:#f5f7fb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.card{
+    width:430px;
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 10px 35px rgba(0,0,0,.10);
+}
+
+.logo{
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    color:#172554;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#64748b;
+    margin-bottom:30px;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    color:#172554;
+    margin-top:18px;
+    margin-bottom:7px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:1px solid #dbe2ea;
+    border-radius:9px;
+    font-size:15px;
+}
+
+input:focus{
+    outline:none;
+    border-color:#2563eb;
+}
+
+button{
+    width:100%;
+    margin-top:25px;
+    padding:14px;
+    border:none;
+    border-radius:9px;
+    background:#2563eb;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+.error{
+    background:#fee2e2;
+    color:#991b1b;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:15px;
+}
+
+.bottom{
+    text-align:center;
+    margin-top:22px;
+    color:#64748b;
+}
+
+.bottom a{
+    color:#2563eb;
+    text-decoration:none;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="logo">
+        Smart Notes AI
+    </div>
+
+    <div class="subtitle">
+        Create your student account
+    </div>
+
+    {% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="POST">
+
+        <label>Username</label>
+
+        <input
+            type="text"
+            name="username"
+            placeholder="Enter username"
+            required
+        >
+
+        <label>Email</label>
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Enter email"
+            required
+        >
+
+        <label>Password</label>
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Minimum 6 characters"
+            required
+        >
+
+        <label>Confirm Password</label>
+
+        <input
+            type="password"
+            name="confirm_password"
+            placeholder="Re-enter password"
+            required
+        >
+
+        <button type="submit">
+            Create Account
+        </button>
+
+    </form>
+
+    <div class="bottom">
+        Already have an account?
+        <a href="/login">Login</a>
+    </div>
+
+</div>
+
+</body>
+</html>

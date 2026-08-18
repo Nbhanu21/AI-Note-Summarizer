@@ -1,0 +1,923 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Dashboard - Smart Notes AI</title>
+
+    <style>
+    *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+    }
+
+    body{
+    background:#f6f7ff;
+    color:#1f2937;
+    }
+
+    .sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:250px;
+    height:100vh;
+    background:linear-gradient(180deg,#4f46e5,#312e81);
+    padding:25px 18px;
+    color:white;
+    }
+
+    .logo{
+    font-size:23px;
+    font-weight:bold;
+    margin-bottom:45px;
+    }
+
+    .logo a{
+    color:white;
+    text-decoration:none;
+    }
+
+    .logo span{
+    color:#c4b5fd;
+    }
+
+    .nav a{
+    display:block;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:12px;
+    color:#ddd6fe;
+    text-decoration:none;
+    font-size:16px;
+    transition:.2s;
+    }
+
+    .nav a:hover,
+    .nav a.active{
+    background:rgba(255,255,255,.16);
+    color:white;
+    }
+
+    .logout{
+    position:absolute;
+    bottom:25px;
+    left:18px;
+    right:18px;
+    }
+
+    .logout a{
+    display:block;
+    text-align:center;
+    padding:12px;
+    background:rgba(255,255,255,.12);
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+    }
+
+    .main{
+    margin-left:250px;
+    padding:40px 32px;
+    max-width:1250px;
+    }
+
+    .header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+    }
+
+    .header h1{
+    font-size:32px;
+    color:#312e81;
+    margin-bottom:6px;
+    }
+
+    .header p{
+    color:#6b7280;
+    font-size:16px;
+    }
+
+    .profile-button{
+    background:white;
+    padding:12px 20px;
+    border-radius:12px;
+    color:#374151;
+    font-weight:bold;
+    box-shadow:0 5px 20px rgba(0,0,0,.06);
+    }
+
+    .profile-button a{
+    color:#374151;
+    text-decoration:none;
+    }
+
+    .profile-card{
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
+    color:white;
+    border-radius:22px;
+    padding:30px;
+    display:flex;
+    align-items:center;
+    gap:25px;
+    box-shadow:0 10px 30px rgba(79,70,229,.2);
+    margin-bottom:25px;
+    position:relative;
+    overflow:hidden;
+    }
+
+    .profile-card:after{
+    content:"";
+    position:absolute;
+    width:250px;
+    height:250px;
+    right:-100px;
+    top:-100px;
+    background:rgba(255,255,255,.10);
+    border-radius:50%;
+    }
+
+    .avatar{
+    width:80px;
+    height:80px;
+    background:white;
+    color:#4f46e5;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:34px;
+    font-weight:bold;
+    flex-shrink:0;
+    position:relative;
+    z-index:2;
+    }
+
+    .profile-info{
+    position:relative;
+    z-index:2;
+    flex:1;
+    }
+
+    .profile-info h2{
+    font-size:27px;
+    margin-bottom:5px;
+    }
+
+    .profile-info p{
+    color:#ddd6fe;
+    font-size:16px;
+    margin-bottom:20px;
+    }
+
+    .profile-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    }
+
+    .profile-item{
+    background:rgba(255,255,255,.14);
+    padding:12px 15px;
+    border-radius:10px;
+    }
+
+    .profile-item small{
+    display:block;
+    color:#ddd6fe;
+    font-size:11px;
+    margin-bottom:5px;
+    }
+
+    .profile-item strong{
+    font-size:14px;
+    color:white;
+    }
+
+    .progress-card{
+    background:white;
+    border-radius:22px;
+    padding:30px;
+    box-shadow:0 8px 25px rgba(79,70,229,.08);
+    margin-bottom:25px;
+    }
+
+    .progress-card h2{
+    color:#312e81;
+    margin-bottom:20px;
+    }
+
+    .progress-layout{
+    display:flex;
+    align-items:center;
+    gap:35px;
+    }
+
+    .progress-circle{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    background:conic-gradient(
+    #6366f1 0deg,
+    #6366f1 calc(var(--accuracy) * 3.6deg),
+    #e5e7eb calc(var(--accuracy) * 3.6deg),
+    #e5e7eb 360deg
+    );
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    }
+
+    .progress-inner{
+    width:115px;
+    height:115px;
+    background:white;
+    border-radius:50%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    }
+
+    .progress-inner strong{
+    font-size:27px;
+    color:#312e81;
+    }
+
+    .progress-inner span{
+    font-size:12px;
+    color:#6b7280;
+    }
+
+    .progress-text{
+    color:#6b7280;
+    line-height:1.6;
+    }
+
+    .stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-bottom:25px;
+    }
+
+    .stat-card{
+    background:white;
+    padding:24px;
+    border-radius:18px;
+    box-shadow:0 7px 22px rgba(79,70,229,.07);
+    }
+
+    .stat-icon{
+    width:45px;
+    height:45px;
+    border-radius:12px;
+    background:#eef2ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    margin-bottom:18px;
+    }
+
+    .stat-card h3{
+    font-size:14px;
+    color:#6b7280;
+    margin-bottom:8px;
+    }
+
+    .stat-number{
+    font-size:30px;
+    font-weight:bold;
+    color:#312e81;
+    }
+
+    .quick-actions{
+    background:white;
+    padding:28px;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(79,70,229,.08);
+    margin-bottom:25px;
+    }
+
+    .quick-actions h2{
+    color:#312e81;
+    margin-bottom:20px;
+    }
+
+    .action-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    }
+
+    .action{
+    padding:18px;
+    border-radius:13px;
+    text-decoration:none;
+    font-weight:bold;
+    text-align:center;
+    transition:.2s;
+    }
+
+    .action:hover{
+    transform:translateY(-2px);
+    }
+
+    .summary-action{
+    background:#dbeafe;
+    color:#1d4ed8;
+    }
+
+    .quiz-action{
+    background:#ede9fe;
+    color:#7c3aed;
+    }
+
+    .history-action{
+    background:#dcfce7;
+    color:#15803d;
+    }
+
+    .activity-section{
+    background:white;
+    padding:28px;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(79,70,229,.08);
+    }
+
+    .activity-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+    }
+
+    .activity-header h2{
+    color:#312e81;
+    }
+
+    .activity-header a{
+    color:#4f46e5;
+    text-decoration:none;
+    font-weight:bold;
+    }
+
+    .activity-box{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:17px;
+    border:1px solid #e5e7eb;
+    border-radius:13px;
+    margin-bottom:12px;
+    text-decoration:none;
+    color:#1f2937;
+    transition:.2s;
+    }
+
+    .activity-box:hover{
+    border-color:#a5b4fc;
+    background:#f8f7ff;
+    }
+
+    .activity-left{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    }
+
+    .activity-icon{
+    width:45px;
+    height:45px;
+    border-radius:11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+    }
+
+    .summary-icon{
+    background:#dbeafe;
+    }
+
+    .quiz-icon{
+    background:#ede9fe;
+    }
+
+    .activity-title{
+    font-weight:bold;
+    margin-bottom:5px;
+    }
+
+    .activity-date{
+    font-size:12px;
+    color:#9ca3af;
+    }
+
+    .activity-right{
+    text-align:right;
+    }
+
+    .activity-type{
+    font-size:11px;
+    font-weight:bold;
+    padding:6px 10px;
+    border-radius:20px;
+    }
+
+    .summary-type{
+    background:#dbeafe;
+    color:#2563eb;
+    }
+
+    .quiz-type{
+    background:#ede9fe;
+    color:#7c3aed;
+    }
+
+    .empty{
+    text-align:center;
+    padding:35px;
+    color:#6b7280;
+    }
+
+    @media(max-width:1000px){
+
+    .stats{
+    grid-template-columns:1fr 1fr;
+    }
+
+    .action-grid{
+    grid-template-columns:1fr;
+    }
+
+    .profile-card{
+    align-items:flex-start;
+    }
+
+    }
+
+    @media(max-width:700px){
+
+    .sidebar{
+    position:relative;
+    width:100%;
+    height:auto;
+    }
+
+    .logout{
+    position:static;
+    margin-top:20px;
+    }
+
+    .main{
+    margin-left:0;
+    padding:20px;
+    }
+
+    .header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:15px;
+    }
+
+    .profile-card{
+    flex-direction:column;
+    }
+
+    .profile-grid{
+    grid-template-columns:1fr;
+    width:100%;
+    }
+
+    .stats{
+    grid-template-columns:1fr;
+    }
+
+    .progress-layout{
+    flex-direction:column;
+    text-align:center;
+    }
+
+    .activity-box{
+    align-items:flex-start;
+    gap:10px;
+    }
+
+    .activity-right{
+    text-align:left;
+    }
+
+    }
+    </style>
+    </head>
+
+    <body>
+
+    <div class="sidebar">
+
+    <div class="logo">
+
+    <a href="{{ url_for('dashboard') }}">
+    Smart <span>Notes AI</span>
+    </a>
+
+    </div>
+
+    <div class="nav">
+
+    <a href="{{ url_for('dashboard') }}" class="active">
+    🏠 Dashboard
+    </a>
+
+    <a href="{{ url_for('summarizer') }}">
+    📝 Summary
+    </a>
+
+    <a href="{{ url_for('quiz') }}">
+    🎯 Quiz
+    </a>
+
+    <a href="{{ url_for('history') }}">
+    🕘 History
+    </a>
+
+    <a href="{{ url_for('settings') }}">
+    ⚙️ Settings
+    </a>
+
+    </div>
+
+    <div class="logout">
+
+    <a href="{{ url_for('logout') }}">
+    Logout
+    </a>
+
+    </div>
+
+    </div>
+
+
+    <div class="main">
+
+    <div class="header">
+
+    <div>
+
+    <h1>Dashboard</h1>
+
+    <p>
+    Welcome back! Here's your learning overview.
+    </p>
+
+    </div>
+
+    <div class="profile-button">
+
+    <a href="{{ url_for('settings') }}">
+    👤 {{ session.get('username','User') }}
+    </a>
+
+    </div>
+
+    </div>
+
+
+    <div class="profile-card">
+
+    <div class="avatar">
+
+    {{ session.get('username','U')[0]|upper }}
+
+    </div>
+
+    <div class="profile-info">
+
+    <h2>
+    {{ session.get('username','User') }}
+    </h2>
+
+    <p>
+    Smart Notes AI Learner
+    </p>
+
+    <div class="profile-grid">
+
+    <div class="profile-item">
+
+    <small>USERNAME</small>
+
+    <strong>
+    {{ session.get('username','User') }}
+    </strong>
+
+    </div>
+
+    <div class="profile-item">
+
+    <small>ACCOUNT TYPE</small>
+
+    <strong>
+    Student
+    </strong>
+
+    </div>
+
+    <div class="profile-item">
+
+    <small>PLATFORM</small>
+
+    <strong>
+    Smart Notes AI
+    </strong>
+
+    </div>
+
+    <div class="profile-item">
+
+    <small>STATUS</small>
+
+    <strong>
+    Active
+    </strong>
+
+    </div>
+
+    </div>
+
+    </div>
+
+    </div>
+
+
+    <div class="progress-card">
+
+    <h2>
+    Learning Progress
+    </h2>
+
+    <div class="progress-layout">
+
+    <div
+    class="progress-circle"
+    style="--accuracy: {{ profile_accuracy|default(0)|float }};"
+    >
+
+    <div class="progress-inner">
+
+    <strong>
+    {{ profile_accuracy|default(0) }}%
+    </strong>
+
+    <span>
+    Accuracy
+    </span>
+
+    </div>
+
+    </div>
+
+    <div class="progress-text">
+
+    <p>
+    Your overall quiz accuracy is calculated from all the quizzes you have completed.
+    </p>
+
+    <br>
+
+    <p>
+    Keep creating summaries and taking quizzes to improve your progress.
+    </p>
+
+    </div>
+
+    </div>
+
+    </div>
+
+
+    <div class="stats">
+
+
+    <div class="stat-card">
+
+    <div class="stat-icon">
+    📚
+    </div>
+
+    <h3>
+    Total Activities
+    </h3>
+
+    <div class="stat-number">
+    {{ total_activities|default(activities|length) }}
+    </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+    <div class="stat-icon">
+    📝
+    </div>
+
+    <h3>
+    Total Summaries
+    </h3>
+
+    <div class="stat-number">
+    {{ total_summaries|default(0) }}
+    </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+    <div class="stat-icon">
+    🎯
+    </div>
+
+    <h3>
+    Total Quizzes
+    </h3>
+
+    <div class="stat-number">
+    {{ total_quizzes|default(0) }}
+    </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+    <div class="stat-icon">
+    📊
+    </div>
+
+    <h3>
+    Profile Accuracy
+    </h3>
+
+    <div class="stat-number">
+    {{ profile_accuracy|default(0) }}%
+    </div>
+
+    </div>
+
+
+    </div>
+
+
+    <div class="quick-actions">
+
+    <h2>
+    Quick Actions
+    </h2>
+
+    <div class="action-grid">
+
+    <a
+    href="{{ url_for('summarizer') }}"
+    class="action summary-action">
+
+    📝 Create Summary
+
+    </a>
+
+    <a
+    href="{{ url_for('quiz') }}"
+    class="action quiz-action">
+
+    🎯 Start Quiz
+
+    </a>
+
+    <a
+    href="{{ url_for('history') }}"
+    class="action history-action">
+
+    🕘 View History
+
+    </a>
+
+    </div>
+
+    </div>
+
+
+    <div class="activity-section">
+
+    <div class="activity-header">
+
+    <h2>
+    Recent Activity
+    </h2>
+
+    <a href="{{ url_for('history') }}">
+    View All
+    </a>
+
+    </div>
+
+
+    {% if activities %}
+
+    {% for activity in activities %}
+
+    <a
+    class="activity-box"
+    href="{{ url_for('history_detail', activity_id=activity.id) }}"
+    >
+
+    <div class="activity-left">
+
+    <div
+    class="activity-icon
+    {% if activity.type == 'Quiz' %}
+    quiz-icon
+    {% else %}
+    summary-icon
+    {% endif %}
+    ">
+
+    {% if activity.type == 'Quiz' %}
+    🎯
+    {% else %}
+    📝
+    {% endif %}
+
+    </div>
+
+    <div>
+
+    <div class="activity-title">
+
+    {{ activity.title or
+    ('Quiz' if activity.type == 'Quiz' else 'Study Notes Summary') }}
+
+    </div>
+
+    <div class="activity-date">
+
+    {{ activity.date or '' }}
+
+    </div>
+
+    </div>
+
+    </div>
+
+
+    <div class="activity-right">
+
+    {% if activity.type == 'Quiz' %}
+
+    <span class="activity-type quiz-type">
+    QUIZ
+    </span>
+
+    {% else %}
+
+    <span class="activity-type summary-type">
+    SUMMARY
+    </span>
+
+    {% endif %}
+
+    </div>
+
+    </a>
+
+    {% endfor %}
+
+    {% else %}
+
+    <div class="empty">
+
+    <h3>
+    No activity yet
+    </h3>
+
+    <p>
+    Create your first summary or quiz to get started.
+    </p>
+
+    </div>
+
+    {% endif %}
+
+    </div>
+
+    </div>
+
+    </body>
+    </html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Smart Notes AI</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#172554;
+}
+
+.navbar{
+    background:#172554;
+    color:white;
+    padding:18px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.nav{
+    display:flex;
+    gap:22px;
+    align-items:center;
+}
+
+.nav a{
+    color:white;
+    text-decoration:none;
+}
+
+.login-btn{
+    background:white;
+    color:#172554 !important;
+    padding:10px 18px;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+.register-btn{
+    background:#2563eb;
+    padding:10px 18px;
+    border-radius:8px;
+}
+
+.logout{
+    background:#dc2626;
+    padding:10px 16px;
+    border-radius:8px;
+}
+
+.hero{
+    max-width:1150px;
+    margin:70px auto;
+    padding:30px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:50px;
+    align-items:center;
+}
+
+.hero h1{
+    font-size:52px;
+    line-height:1.1;
+    margin-bottom:20px;
+}
+
+.hero h1 span{
+    color:#2563eb;
+}
+
+.hero p{
+    color:#64748b;
+    font-size:18px;
+    line-height:1.7;
+    margin-bottom:30px;
+}
+
+.buttons{
+    display:flex;
+    gap:15px;
+}
+
+.primary{
+    background:#2563eb;
+    color:white;
+    padding:14px 24px;
+    text-decoration:none;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.secondary{
+    background:#e0e7ff;
+    color:#172554;
+    padding:14px 24px;
+    text-decoration:none;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.card-area{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.card-area h2{
+    margin-bottom:20px;
+}
+
+.feature{
+    display:flex;
+    gap:15px;
+    padding:18px;
+    background:#f8fafc;
+    border-radius:12px;
+    margin-bottom:15px;
+}
+
+.icon{
+    font-size:28px;
+}
+
+.feature h3{
+    margin-bottom:5px;
+}
+
+.feature p{
+    color:#64748b;
+    font-size:14px;
+    line-height:1.5;
+}
+
+@media(max-width:800px){
+
+    .navbar{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .nav{
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+
+    .hero{
+        grid-template-columns:1fr;
+        margin:30px auto;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="navbar">
+
+
+<div class="logo">
+    Smart Notes AI
+</div>
+
+
+<div class="nav">
+
+<a href="/">
+    Home
+</a>
+
+
+{% if session.get("username") %}
+
+<a href="/dashboard">
+    Dashboard
+</a>
+
+<a href="/history">
+    History
+</a>
+
+<a href="/quiz">
+    Quiz
+</a>
+
+<a href="/logout" class="logout">
+    Logout
+</a>
+
+
+{% else %}
+
+<a href="/login" class="login-btn">
+    Login
+</a>
+
+<a href="/register" class="register-btn">
+    Register
+</a>
+
+{% endif %}
+
+</div>
+
+</div>
+
+
+<div class="hero">
+
+
+<div>
+
+<h1>
+Study Smarter with
+<span>AI</span>
+</h1>
+
+
+<p>
+Transform your study notes into clear summaries
+and interactive quizzes using Smart Notes AI.
+</p>
+
+
+<div class="buttons">
+
+
+{% if session.get("username") %}
+
+<a
+href="/dashboard"
+class="primary"
+>
+Go to Dashboard
+</a>
+
+<a
+href="/quiz"
+class="secondary"
+>
+Generate Quiz
+</a>
+
+
+{% else %}
+
+<a
+href="/login"
+class="primary"
+>
+Get Started
+</a>
+
+<a
+href="/register"
+class="secondary"
+>
+Create Account
+</a>
+
+{% endif %}
+
+
+</div>
+
+</div>
+
+
+<div class="card-area">
+
+
+<h2>
+✨ Smart Notes AI
+</h2>
+
+
+<div class="feature">
+
+<div class="icon">
+📚
+</div>
+
+<div>
+
+<h3>
+AI Note Summarizer
+</h3>
+
+<p>
+Convert long notes into simple summaries.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="feature">
+
+<div class="icon">
+📝
+</div>
+
+<div>
+
+<h3>
+AI Quiz Generator
+</h3>
+
+<p>
+Generate MCQ quizzes from your study notes.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="feature">
+
+<div class="icon">
+📊
+</div>
+
+<div>
+
+<h3>
+Learning Dashboard
+</h3>
+
+<p>
+Track your learning progress and quiz scores.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="feature">
+
+<div class="icon">
+🕒
+</div>
+
+<div>
+
+<h3>
+Activity History
+</h3>
+
+<p>
+View your previous summaries and quizzes.
+</p>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+</body>
+
+</html>

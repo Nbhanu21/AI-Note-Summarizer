@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Activity Details - Smart Notes AI</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #f5f7fb;
+    color: #222;
+}
+
+.navbar {
+    background: #172554;
+    color: white;
+    padding: 18px 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo a {
+    color: white;
+    text-decoration: none;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 45px auto;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+}
+
+h1 {
+    color: #172554;
+    margin-bottom: 8px;
+}
+
+.date {
+    color: #666;
+    margin-bottom: 35px;
+}
+
+.score-box {
+    background: #eef4ff;
+    padding: 30px;
+    border-radius: 14px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.score-box h2 {
+    color: #2563eb;
+    font-size: 32px;
+    margin: 0 0 10px;
+}
+
+.score-box p {
+    color: #555;
+    font-size: 18px;
+}
+
+.question {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+.question h3 {
+    color: #172554;
+    margin-top: 0;
+}
+
+.option {
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    background: white;
+    border: 1px solid #ddd;
+}
+
+.correct {
+    background: #dcfce7;
+    border-color: #22c55e;
+}
+
+.wrong {
+    background: #fee2e2;
+    border-color: #ef4444;
+}
+
+.answer-label {
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.summary {
+    background: #f8fafc;
+    padding: 25px;
+    border-radius: 12px;
+    white-space: pre-wrap;
+    line-height: 1.7;
+}
+
+.buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    background: #172554;
+    color: white;
+    padding: 13px 22px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background: #0f172a;
+}
+
+.blue {
+    background: #2563eb;
+}
+
+.warning {
+    text-align: center;
+    padding: 45px;
+}
+
+.warning h2 {
+    color: #2563eb;
+}
+
+@media (max-width: 700px) {
+
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .nav a {
+        margin: 0 8px;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+
+    <div class="logo">
+        <a href="/">Smart Notes AI</a>
+    </div>
+
+    <div class="nav">
+        <a href="/summarizer">Summarizer</a>
+        <a href="/quiz">Quiz Generator</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/history">History</a>
+
+        {% if session.get("username") %}
+        <a href="/logout">Logout</a>
+        {% else %}
+        <a href="/login">Login</a>
+        {% endif %}
+    </div>
+
+</div>
+
+<div class="container">
+
+<div class="card">
+
+    {% if activity.type == "Quiz" %}
+
+        <h1>
+            📝 {{ activity.title }}
+        </h1>
+
+        <div class="date">
+            {{ activity.date }}
+        </div>
+
+        {% if activity.completed %}
+
+            <div class="score-box">
+
+                <h2>
+                    {{ activity.score }} / {{ activity.total }}
+                </h2>
+
+                <p>
+                    Score: {{ activity.percentage }}%
+                </p>
+
+            </div>
+
+            {% if activity.answers %}
+
+                {% for result in activity.answers %}
+
+                <div class="question">
+
+                    <h3>
+                        {{ loop.index }}. {{ result.question }}
+                    </h3>
+
+                    {% for option in result.options %}
+
+                        {% if loop.index0 == result.answer %}
+
+                            <div class="option correct">
+                                ✓ {{ option }}
+                            </div>
+
+                        {% elif loop.index0 == result.selected and not result.correct %}
+
+                            <div class="option wrong">
+                                ✗ {{ option }}
+                            </div>
+
+                        {% else %}
+
+                            <div class="option">
+                                {{ option }}
+                            </div>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {% if result.correct %}
+
+                        <div class="answer-label" style="color:#16a34a;">
+                            ✓ Correct Answer
+                        </div>
+
+                    {% else %}
+
+                        <div class="answer-label" style="color:#dc2626;">
+                            ✗ Incorrect Answer
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% else %}
+
+            <div class="warning">
+
+                <h2>
+                    Quiz Not Completed
+                </h2>
+
+                <p>
+                    This quiz has been generated but has not been submitted yet.
+                </p>
+
+                <div class="buttons">
+
+                    <a href="/quiz" class="btn blue">
+                        Take Quiz
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    {% elif activity.type == "PDF" %}
+
+        <h1>
+            📄 {{ activity.title }}
+        </h1>
+
+        <div class="date">
+            {{ activity.date }}
+        </div>
+
+        <h2>
+            AI Generated Summary
+        </h2>
+
+        <div class="summary">
+            {{ activity.content }}
+        </div>
+
+    {% else %}
+
+        <h1>
+            📑 {{ activity.title }}
+        </h1>
+
+        <div class="date">
+            {{ activity.date }}
+        </div>
+
+        <h2>
+            AI Generated Summary
+        </h2>
+
+        <div class="summary">
+            {{ activity.content }}
+        </div>
+
+    {% endif %}
+
+    <div class="buttons">
+
+        <a href="/dashboard" class="btn">
+            ← Dashboard
+        </a>
+
+        <a href="/history" class="btn">
+            📚 History
+        </a>
+
+        <a href="/" class="btn">
+            🏠 Home
+        </a>
+
+    </div>
+
+</div>
+
+</div>
+
+</body>
+</html>

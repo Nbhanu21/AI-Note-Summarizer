@@ -1,0 +1,543 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Quiz Result - Smart Notes AI</title>
+
+<style>
+*{
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+margin:0;
+background:#f5f7fb;
+color:#1e293b;
+}
+
+.navbar{
+background:#172554;
+color:white;
+padding:18px 35px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo a{
+color:white;
+text-decoration:none;
+font-size:24px;
+font-weight:bold;
+}
+
+.nav a{
+color:white;
+text-decoration:none;
+margin-left:20px;
+}
+
+.container{
+max-width:950px;
+margin:35px auto;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.title{
+font-size:28px;
+font-weight:bold;
+color:#172554;
+margin-bottom:20px;
+}
+
+.score-box{
+text-align:center;
+background:#eff6ff;
+padding:30px;
+border-radius:15px;
+margin-bottom:30px;
+}
+
+.score-box p{
+margin:8px 0;
+color:#475569;
+}
+
+.score-box h1{
+font-size:45px;
+margin:10px;
+color:#172554;
+}
+
+.percentage{
+font-size:25px;
+font-weight:bold;
+color:#2563eb;
+}
+
+.stats{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:20px;
+}
+
+.stat{
+padding:18px;
+border-radius:12px;
+background:white;
+font-size:16px;
+}
+
+.stat strong{
+font-size:26px;
+display:block;
+margin-bottom:5px;
+}
+
+.correct-stat{
+color:#15803d;
+border:2px solid #86efac;
+background:#f0fdf4;
+}
+
+.wrong-stat{
+color:#b91c1c;
+border:2px solid #fca5a5;
+background:#fef2f2;
+}
+
+.review-title{
+font-size:22px;
+color:#172554;
+margin:30px 0 18px;
+}
+
+.question{
+padding:25px;
+border:2px solid #e2e8f0;
+border-radius:14px;
+margin-bottom:25px;
+}
+
+.correct-question{
+background:#f0fdf4;
+border-color:#86efac;
+}
+
+.wrong-question{
+background:#fef2f2;
+border-color:#fca5a5;
+}
+
+.question-title{
+font-size:19px;
+font-weight:bold;
+color:#172554;
+margin-bottom:18px;
+line-height:1.5;
+}
+
+.option{
+padding:14px;
+background:white;
+border:2px solid #e2e8f0;
+border-radius:9px;
+margin-bottom:10px;
+line-height:1.5;
+}
+
+.selected{
+border-color:#2563eb;
+background:#dbeafe;
+}
+
+.correct-option{
+border-color:#22c55e;
+background:#dcfce7;
+}
+
+.wrong-option{
+border-color:#ef4444;
+background:#fee2e2;
+}
+
+.badge{
+display:inline-block;
+font-weight:bold;
+font-size:12px;
+margin-left:8px;
+padding:4px 8px;
+border-radius:6px;
+}
+
+.blue{
+color:#1d4ed8;
+background:#dbeafe;
+}
+
+.green{
+color:#15803d;
+background:#dcfce7;
+}
+
+.red{
+color:#b91c1c;
+background:#fee2e2;
+}
+
+.result{
+padding:15px;
+background:white;
+border-radius:10px;
+margin-top:15px;
+border:1px solid #e2e8f0;
+line-height:1.7;
+}
+
+.answer-label{
+font-weight:bold;
+}
+
+.buttons{
+display:flex;
+gap:15px;
+margin-top:30px;
+}
+
+.buttons a{
+flex:1;
+text-align:center;
+padding:14px;
+border-radius:9px;
+text-decoration:none;
+background:#2563eb;
+color:white;
+font-weight:bold;
+}
+
+.buttons a:hover{
+background:#1d4ed8;
+}
+
+.buttons a.secondary{
+background:#e2e8f0;
+color:#172554;
+}
+
+.buttons a.secondary:hover{
+background:#cbd5e1;
+}
+
+.empty{
+text-align:center;
+padding:40px;
+color:#64748b;
+}
+
+@media(max-width:700px){
+
+.navbar{
+padding:15px;
+flex-direction:column;
+gap:12px;
+}
+
+.nav a{
+margin-left:8px;
+margin-right:8px;
+font-size:14px;
+}
+
+.container{
+margin:15px auto;
+padding:10px;
+}
+
+.card{
+padding:20px;
+}
+
+.stats{
+grid-template-columns:1fr;
+}
+
+.buttons{
+flex-direction:column;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+
+<div class="logo">
+
+<a href="{{ url_for('dashboard') }}">
+Smart Notes AI
+</a>
+
+</div>
+
+<div class="nav">
+
+<a href="{{ url_for('dashboard') }}">
+Dashboard
+</a>
+
+<a href="{{ url_for('summarizer') }}">
+Summary
+</a>
+
+<a href="{{ url_for('history') }}">
+History
+</a>
+
+<a href="{{ url_for('logout') }}">
+Logout
+</a>
+
+</div>
+
+</div>
+
+
+<div class="container">
+
+<div class="card">
+
+<div class="title">
+
+📝 {{ title if title else "Quiz Result" }}
+
+</div>
+
+
+<div class="score-box">
+
+<p>Your Score</p>
+
+<h1>
+{{ score }} / {{ total }}
+</h1>
+
+<div class="percentage">
+{{ percentage }}%
+</div>
+
+
+<div class="stats">
+
+<div class="stat correct-stat">
+
+<strong>
+{{ correct_answers }}
+</strong>
+
+Correct Answers
+
+</div>
+
+
+<div class="stat wrong-stat">
+
+<strong>
+{{ wrong_answers }}
+</strong>
+
+Wrong Answers
+
+</div>
+
+</div>
+
+</div>
+
+
+<h2 class="review-title">
+Answer Review
+</h2>
+
+
+{% if questions %}
+
+{% for q in questions %}
+
+<div class="question
+{% if q.is_correct %}
+correct-question
+{% else %}
+wrong-question
+{% endif %}
+">
+
+
+<div class="question-title">
+
+{{ loop.index }}.
+{{ q.question }}
+
+</div>
+
+
+{% if q.options %}
+
+{% for option in q.options %}
+
+{% set option_text = option|string %}
+{% set selected_text = q.selected_answer|string %}
+{% set correct_text = q.correct_answer|string %}
+
+
+<div class="option
+
+{% if option_text == correct_text %}
+correct-option
+{% endif %}
+
+{% if option_text == selected_text and not q.is_correct %}
+wrong-option
+{% endif %}
+
+{% if option_text == selected_text and q.is_correct %}
+selected
+{% endif %}
+
+">
+
+
+{{ option }}
+
+
+{% if option_text == selected_text %}
+
+{% if q.is_correct %}
+
+<span class="badge green">
+✓ Your Answer
+</span>
+
+{% else %}
+
+<span class="badge red">
+✗ Your Answer
+</span>
+
+{% endif %}
+
+{% endif %}
+
+
+{% if option_text == correct_text %}
+
+<span class="badge green">
+✓ Correct Answer
+</span>
+
+{% endif %}
+
+
+</div>
+
+{% endfor %}
+
+{% endif %}
+
+
+<div class="result">
+
+{% if q.is_correct %}
+
+<span class="badge green">
+✓ CORRECT
+</span>
+
+<br>
+
+<strong>
+Your Answer:
+</strong>
+
+{{ q.selected_answer }}
+
+{% else %}
+
+<span class="badge red">
+✗ WRONG
+</span>
+
+<br><br>
+
+<strong class="answer-label">
+Your Answer:
+</strong>
+
+<span class="red">
+{{ q.selected_answer }}
+</span>
+
+<br><br>
+
+<strong class="answer-label">
+Correct Answer:
+</strong>
+
+<span class="green">
+{{ q.correct_answer }}
+</span>
+
+{% endif %}
+
+</div>
+
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<div class="empty">
+No answer details available.
+</div>
+
+{% endif %}
+
+
+<div class="buttons">
+
+<a href="{{ url_for('quiz') }}">
+Take Another Quiz
+</a>
+
+<a href="{{ url_for('history') }}" class="secondary">
+View History
+</a>
+
+<a href="{{ url_for('dashboard') }}" class="secondary">
+Dashboard
+</a>
+
+</div>
+
+
+</div>
+
+</div>
+
+</body>
+</html>
+```

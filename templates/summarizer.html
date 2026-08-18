@@ -1,0 +1,546 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Smart Notes AI - Summary</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,Helvetica,sans-serif;
+background:
+radial-gradient(circle at top right,rgba(99,102,241,.10),transparent 32%),
+#f6f7ff;
+color:#1f2937;
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:250px;
+height:100vh;
+background:linear-gradient(180deg,#4f46e5,#312e81);
+padding:25px 18px;
+color:white;
+box-shadow:8px 0 30px rgba(49,46,129,.16);
+z-index:10;
+}
+
+.logo{
+font-size:23px;
+font-weight:700;
+margin-bottom:45px;
+}
+
+.logo a{
+color:white;
+text-decoration:none;
+}
+
+.logo span{
+color:#c4b5fd;
+}
+
+.nav a{
+display:flex;
+align-items:center;
+gap:12px;
+padding:14px 16px;
+margin-bottom:8px;
+color:#ddd6fe;
+text-decoration:none;
+border-radius:12px;
+transition:.25s;
+}
+
+.nav a:hover{
+background:rgba(255,255,255,.16);
+color:white;
+transform:translateX(5px);
+}
+
+.nav a.active{
+background:rgba(255,255,255,.18);
+color:white;
+}
+
+.logout{
+position:absolute;
+bottom:25px;
+left:18px;
+right:18px;
+}
+
+.logout a{
+display:block;
+text-align:center;
+padding:12px;
+background:rgba(255,255,255,.12);
+color:white;
+text-decoration:none;
+border-radius:10px;
+}
+
+.main{
+margin-left:250px;
+padding:35px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.header h1{
+font-size:31px;
+color:#312e81;
+}
+
+.header p{
+margin-top:7px;
+color:#6b7280;
+}
+
+.user{
+background:white;
+padding:11px 18px;
+border-radius:12px;
+box-shadow:0 5px 20px rgba(79,70,229,.08);
+font-weight:600;
+}
+
+.summary-card{
+max-width:1000px;
+margin:auto;
+background:white;
+border-radius:22px;
+padding:35px;
+box-shadow:0 10px 35px rgba(79,70,229,.10);
+border:1px solid #e5e7eb;
+}
+
+.summary-heading{
+display:flex;
+align-items:center;
+gap:15px;
+margin-bottom:25px;
+}
+
+.summary-icon{
+width:58px;
+height:58px;
+border-radius:15px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,#dbeafe,#bfdbfe);
+font-size:28px;
+}
+
+.summary-heading h2{
+color:#312e81;
+font-size:25px;
+}
+
+.summary-heading p{
+color:#6b7280;
+margin-top:5px;
+}
+
+.upload-box{
+border:2px dashed #c7d2fe;
+border-radius:18px;
+padding:35px;
+text-align:center;
+background:#fafaff;
+transition:.25s;
+margin-bottom:25px;
+}
+
+.upload-box:hover{
+border-color:#6366f1;
+background:#f5f3ff;
+}
+
+.upload-icon{
+font-size:42px;
+margin-bottom:12px;
+}
+
+.upload-box h3{
+color:#312e81;
+font-size:20px;
+margin-bottom:8px;
+}
+
+.upload-box p{
+color:#6b7280;
+margin-bottom:20px;
+}
+
+.file-input{
+display:none;
+}
+
+.file-label{
+display:inline-block;
+background:#4f46e5;
+color:white;
+padding:13px 22px;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+transition:.25s;
+}
+
+.file-label:hover{
+background:#4338ca;
+transform:translateY(-2px);
+}
+
+.text-section{
+margin-top:25px;
+}
+
+.text-section label{
+display:block;
+font-weight:bold;
+color:#312e81;
+margin-bottom:10px;
+}
+
+textarea{
+width:100%;
+min-height:220px;
+resize:vertical;
+border:1px solid #d1d5db;
+border-radius:14px;
+padding:16px;
+font-family:Arial,sans-serif;
+font-size:15px;
+outline:none;
+transition:.25s;
+}
+
+textarea:focus{
+border-color:#6366f1;
+box-shadow:0 0 0 4px rgba(99,102,241,.10);
+}
+
+.title-section{
+margin-top:25px;
+}
+
+.title-section label{
+display:block;
+font-weight:bold;
+color:#312e81;
+margin-bottom:10px;
+}
+
+input[type="text"]{
+width:100%;
+padding:14px;
+border:1px solid #d1d5db;
+border-radius:11px;
+font-size:15px;
+outline:none;
+}
+
+input[type="text"]:focus{
+border-color:#6366f1;
+box-shadow:0 0 0 4px rgba(99,102,241,.10);
+}
+
+.button-row{
+display:flex;
+gap:15px;
+margin-top:25px;
+}
+
+.generate{
+flex:1;
+border:0;
+padding:15px;
+border-radius:11px;
+background:#4f46e5;
+color:white;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+transition:.25s;
+}
+
+.generate:hover{
+background:#4338ca;
+transform:translateY(-2px);
+}
+
+.history-btn{
+flex:1;
+padding:15px;
+border-radius:11px;
+background:#eef2ff;
+color:#3730a3;
+text-decoration:none;
+text-align:center;
+font-weight:bold;
+transition:.25s;
+}
+
+.history-btn:hover{
+background:#e0e7ff;
+transform:translateY(-2px);
+}
+
+.info{
+margin-top:25px;
+padding:16px;
+border-radius:12px;
+background:#eff6ff;
+color:#1e40af;
+font-size:14px;
+line-height:1.5;
+}
+
+@media(max-width:700px){
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+}
+
+.logout{
+position:static;
+margin-top:20px;
+}
+
+.main{
+margin-left:0;
+padding:20px;
+}
+
+.header{
+flex-direction:column;
+align-items:flex-start;
+gap:15px;
+}
+
+.summary-card{
+padding:22px;
+}
+
+.button-row{
+flex-direction:column;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+<a href="{{ url_for('dashboard') }}">
+Smart <span>Notes AI</span>
+</a>
+</div>
+
+<div class="nav">
+
+<a href="{{ url_for('dashboard') }}">
+🏠 Dashboard
+</a>
+
+<a href="{{ url_for('summarizer') }}" class="active">
+📝 Summary
+</a>
+
+<a href="{{ url_for('quiz') }}">
+🎯 Quiz
+</a>
+
+<a href="{{ url_for('history') }}">
+🕘 History
+</a>
+
+</div>
+
+<div class="logout">
+<a href="{{ url_for('logout') }}">
+Logout
+</a>
+</div>
+
+</div>
+
+
+<div class="main">
+
+<div class="header">
+
+<div>
+<h1>Create Summary</h1>
+<p>Turn your notes and documents into smart summaries.</p>
+</div>
+
+<div class="user">
+👤 {{ session.get('username','User') }}
+</div>
+
+</div>
+
+
+<div class="summary-card">
+
+<div class="summary-heading">
+
+<div class="summary-icon">
+📝
+</div>
+
+<div>
+<h2>AI Note Summarizer</h2>
+<p>Upload a PDF or enter your notes below.</p>
+</div>
+
+</div>
+
+
+<form method="POST"
+      action="{{ url_for('summarizer') }}"
+      enctype="multipart/form-data">
+
+
+<div class="upload-box">
+
+<div class="upload-icon">
+📄
+</div>
+
+<h3>Upload PDF</h3>
+
+<p>
+Choose a PDF document to generate an AI-powered summary.
+</p>
+
+<input
+type="file"
+name="file"
+id="file"
+class="file-input"
+accept=".pdf"
+>
+
+<label for="file" class="file-label">
+Choose PDF
+</label>
+
+<p id="file-name" style="margin-top:12px;font-size:13px;"></p>
+
+</div>
+
+
+<div class="title-section">
+
+<label for="title">
+Summary Title
+</label>
+
+<input
+type="text"
+id="title"
+name="title"
+placeholder="Enter a title for your summary"
+>
+
+</div>
+
+
+<div class="text-section">
+
+<label for="text">
+Or paste your notes
+</label>
+
+<textarea
+id="text"
+name="text"
+placeholder="Paste your notes, study material, or text here..."
+></textarea>
+
+</div>
+
+
+<div class="button-row">
+
+<button
+type="submit"
+class="generate"
+>
+✨ Generate Summary
+</button>
+
+<a
+href="{{ url_for('history') }}"
+class="history-btn"
+>
+🕘 View History
+</a>
+
+</div>
+
+</form>
+
+
+<div class="info">
+<strong>Tip:</strong>
+You can upload a PDF or paste your notes. Add a title so you can easily recognize the summary later in History.
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const fileInput=document.getElementById("file");
+const fileName=document.getElementById("file-name");
+
+if(fileInput){
+
+fileInput.addEventListener("change",function(){
+
+if(this.files.length>0){
+
+fileName.textContent="Selected file: "+this.files[0].name;
+
+}else{
+
+fileName.textContent="";
+
+}
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
+```
